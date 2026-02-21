@@ -18,3 +18,31 @@ Para isso, utilizamos os seguintes arquivos:
 
 ## Execução e métricas
 
+Após aplicar todos arquivos acima o resultado é este:
+```
+> k get pods                                                      kubernetes-admin@kubernetes
+NAME                                READY   STATUS    RESTARTS      AGE
+giropops-senhas-7fbb5f8769-npwrc    1/1     Running   0             28s
+giropops-senhas-7fbb5f8769-qgjpm    1/1     Running   0             36m
+giropops-senhas-7fbb5f8769-t7m95    1/1     Running   0             13s
+locust-giropops-847c48b467-69ppv    1/1     Running   3 (63m ago)   63m
+redis-deployment-77b6df7bbf-gqpkz   1/1     Running   0             17m
+
+> k get svc                                                       kubernetes-admin@kubernetes
+NAME              TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+giropops-senhas   ClusterIP   10.99.184.34     <none>        80/TCP     61m
+kubernetes        ClusterIP   10.96.0.1        <none>        443/TCP    3d
+locust-giropops   ClusterIP   10.99.182.111    <none>        80/TCP     57m
+nginx             ClusterIP   10.107.226.57    <none>        80/TCP     22h
+redis-service     ClusterIP   10.111.151.164   <none>        6379/TCP   61m
+> k get hpa                                                       kubernetes-admin@kubernetes
+NAME                  REFERENCE                     TARGETS                         MINPODS   MAXPODS   REPLICAS   AGE
+giropops-senhas-hpa   Deployment/giropops-senhas    cpu: 70%/50%, memory: 34%/50%   3         10        3          65m
+redis-hpa             Deployment/redis-deployment   cpu: 20%/50%, memory: 10%/50%   1         10        1          65m
+
+```
+A aplicação está acessivel em [giropops.carlosclaro.com.br](giropops.carlosclaro.com.br).\
+Acessando [locust.carlosclaro.com.br](locust.carlosclaro.com.br) podemos definir os testes e logo abaixo veremos o resultado:
+```
+
+```
