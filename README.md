@@ -47,3 +47,4 @@ Acessando [locust.carlosclaro.com.br](locust.carlosclaro.com.br) podemos definir
 
 
 ```
+<img src="./locust-100-users.png" />
