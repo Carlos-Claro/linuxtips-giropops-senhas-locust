@@ -17,6 +17,7 @@ resources:
   cpu: 20m
   memory: 96Mi
 ```
+Verificações de integridade do deployment com startupProbe, livenessProbe e readinessProbe.
 - [giropops-senhas-service.yaml](./giropops-senhas-service.yaml) - expose os serviços de giropops-senhas e redis, para a aplicação utilizar
 - [giropops-senhas-ingress.yaml](./giropops-senhas-ingress.yaml) - expose a aplicação giropops-senhas no endereço [https://giropops-senhas.carlosclaro.com.br](giropops-senhas.carlosclaro.com.br), utilizando certificado secretName: giropops-senhas-carlosclaro-tls-prod
 - [giropops-senhas-hpa.yaml](./giropops-senhas-hpa.yaml) - aplica as regras de - Resource de CPU e Memoria tanto para o redis como para o giropops-senhas, levando em conta que o pod em standby utiliza 34Mi de memória, nosso resource request é de 64Mi, e o max limit 96Mi, o limit para criar um novo pod é de 70% então 48Mi. Como a trecho abaixo:
@@ -133,9 +134,12 @@ behavior:
       - type: Percent
         value: 100
         periodSeconds: 2
-...
-
-
 ```
 Após estas alterações:
 <img src="./teste-100-2.png" />
+Ainda persistem os erro mas em 1%, frente a anterior de 4%, notei que o momento dos erros é na segunda onda de scaleup do 6 para 8, 
+```
+Normal   SuccessfulRescale        7m1s (x9 over 7h44m)   horizontal-pod-autoscaler  New size: 6; reason: cpu resource utilization (percentage of request) above target
+  Normal   SuccessfulRescale        2m45s (x5 over 6h34m)  horizontal-pod-autoscaler  New size: 8; reason: All metrics below target
+
+```

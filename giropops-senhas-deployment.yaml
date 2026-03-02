@@ -5,7 +5,7 @@ metadata:
     app: giropops-senhas
   name: giropops-senhas
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: giropops-senhas
@@ -21,7 +21,8 @@ spec:
         - name: REDIS_HOST
           value: redis-service
         ports:
-        - containerPort: 5000
+        - name: http-giro
+          containerPort: 5000
         resources: 
           limits:
             cpu: 20m
@@ -29,6 +30,26 @@ spec:
           requests:
             cpu: 15m
             memory: 64Mi
+        # startupProbe:
+        #   httpGet:
+        #     path: /
+        #     port: http-giro
+        #   initialDelaySeconds: 30
+        #   periodSeconds: 10
+        #   failureThreshold: 3
+        # livenessProbe:
+        #   httpGet:
+        #     path: /
+        #     port: http-giro
+        #   initialDelaySeconds: 15
+        #   periodSeconds: 20
+        #   timeoutSeconds: 5
+        #   failureThreshold: 3
+        # readinessProbe:
+        #   httpGet: 
+        #     path: /api/senhas
+        #     port: http-giro
+        #   initialDelaySeconds: 5
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -58,3 +79,9 @@ spec:
           requests:
             memory: "32Mi"
             cpu: "15m"
+        startupProbe:
+          tcpSocket:
+            port: 6379 # Verifique se a porta do Redis está ativa
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          failureThreshold: 3

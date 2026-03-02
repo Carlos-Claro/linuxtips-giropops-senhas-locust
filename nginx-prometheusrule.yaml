@@ -1,0 +1,46 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: nginx-prometheus-rule
+  namespace: monitoring
+  labels:
+    prometheus: k8s
+    role: alert-rules
+    app.kubernetes.io/name: kube-prometheus
+    app.kubernetes.io/part-of: kube-prometheus
+spec:
+  groups:
+  - name: nginx-prometheus-rules
+    rules:
+    - alert: NginxPodDown
+      expr: nginx_up == 0
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Nginx is down"
+        description: "The Nginx has been down for more than 1 minutes."
+    - alert: NginxHighRequestLatency
+      expr: nginx_request_duration_seconds{job="nginx"} > 0.5
+      for: 1m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High request latency"
+        description: "The request latency is higher than 0.5 seconds for more than"
+    - alert: NginxHighErrorRate
+      expr: rate(nginx_http_requests_total{job="nginx"}[5m]) > 10
+      for: 1m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High error rate"
+        description: "The error rate is higher than 5% for more than 1 minutes."
+    - alert: NginxHighCpuUsage
+      expr: (sum(rate(container_cpu_usage_seconds_total{container!=""}[5m])) / sum(container_spec_cpu_quota{container!=""} / container_spec_cpu_period{container!=""})) > 0.8
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Alto uso de CPU"
+        description: "O uso de CPU é maior que 80% por mais de 5 minutos"

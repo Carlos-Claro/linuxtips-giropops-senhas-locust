@@ -7,28 +7,28 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: giropops-senhas
-  minReplicas: 1
-  maxReplicas: 10
+  minReplicas: 3
+  maxReplicas: 15
   metrics:
   - type: Resource
     resource:
       name: cpu
       target:
          type: Utilization
-         averageUtilization: 50
+         averageUtilization: 70
   - type: Resource
     resource:
       name: memory
       target:
          type: Utilization
-         averageUtilization: 50
+         averageUtilization: 70
   behavior: 
     scaleUp:
       stabilizationWindowSeconds: 0
       policies:
       - type: Percent
         value: 100
-        periodSeconds: 10
+        periodSeconds: 2
     scaleDown:
       stabilizationWindowSeconds: 20
       policies:
